@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WORDLE</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/images" href="jellyfish.png">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+</head>
+<body class="light">
+
+  <!-- landing page -->
+  <div class="landing" id="landing">
+
+    <div class="landing-inner">
+      <h1 class="landing-title">WORDLE</h1>
+
+      <div class="landing-form">
+        <p class="landing-question">Hi silly, what's your name?</p>
+        <input
+          type="text"
+          id="nameInput"
+          class="name-input"
+          maxlength="12"
+          placeholder="your name..."
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <p class="name-error hidden" id="nameError">name can't be empty!</p>
+        <button class="play-button" id="playButton">
+          <span class="play-button-icon">▶</span>
+          <span>PLAY</span>
+        </button>
+      </div>
+
+      <p class="trademark">Kanoushin</p>
+    </div>
+
+  </div>
+
+  <!-- landing page ends, under landing page game stays hidden until play clicked -->
+  <div class="game-screen hidden" id="gameScreen">
+
+    <div class="top-bar">
+      <div class="title-area">
+        <h1 class="game-title">WORDLE</h1>
+        <span class="progress-label">PROGRESS</span>
+      </div>
+
+      <div class="top-right">
+        <!-- players name -->
+        <div class="player-badge" id="playerBadge">
+          <span class="player-icon">👾</span>
+          <span class="player-name" id="playerNameDisplay"></span>
+        </div>
+
+        <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">
+          <div class="toggle-icon" id="toggleIcon">🪄</div>
+        </button>
+
+        <button class="hamburger" id="hamburgerButton" title="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- settings are empty need to add, no idea-->
+    <div class="menu-panel" id="menuPanel">
+      <div class="menu-content">
+        <button class="menu-close" id="menuClose">✕</button>
+        <h2 class="menu-title">Menu</h2>
+        <ul class="menu-list">
+          <li><button class="menu-item" id="howToPlayButton">📖 How to Play</button></li>
+          <li><button class="menu-item">⚙️ Settings</button></li>
+          <li><button class="menu-item">💌 About Us</button></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- how to play rukles same as normal wordle game -->
+    <div class="modal-overlay" id="howToPlayModal">
+      <div class="modal-box">
+        <button class="modal-close" id="modalClose">✕</button>
+        <h2>How to Play</h2>
+        <p>Guess the <strong>5-letter word</strong> in 6 tries.</p>
+        <div class="example-tiles">
+          <div class="ex-tile correct">W</div>
+          <div class="ex-tile">O</div>
+          <div class="ex-tile">R</div>
+          <div class="ex-tile">L</div>
+          <div class="ex-tile">D</div>
+        </div>
+        <p><strong>W</strong> is in the right spot.</p>
+        <div class="example-tiles">
+          <div class="ex-tile">P</div>
+          <div class="ex-tile present">U</div>
+          <div class="ex-tile">Z</div>
+          <div class="ex-tile">Z</div>
+          <div class="ex-tile">L</div>
+        </div>
+        <p><strong>U</strong> is in the word, wrong spot.</p>
+        <div class="example-tiles">
+          <div class="ex-tile">G</div>
+          <div class="ex-tile">A</div>
+          <div class="ex-tile absent">M</div>
+          <div class="ex-tile">E</div>
+          <div class="ex-tile">S</div>
+        </div>
+        <p><strong>M</strong> is not in the word.</p>
+      </div>
+    </div>
+
+    <div class="hearts-row" id="heartsRow"></div>
+    <div class="puzzle-label" id="puzzleLabel">Puzzle 0000</div>
+
+    <div class="game-container">
+      <div class="grid" id="grid"></div>
+      <div class="message-area" id="messageArea"></div>
+      <button class="next-button hidden" id="nextButton">NEXT PUZZLE →</button>
+    </div>
+
+    <div class="keyboard" id="keyboard"></div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
