@@ -98,10 +98,31 @@ let playerName = "";
 document.addEventListener("DOMContentLoaded", () => {
   loadFromStorage();
   setupLanding();
+  setupCustomCursor();
 
   // dark mode emoji, need to change
   applyTheme();
 });
+
+// custom cursor follows the mouse everywhere, grows on hover over clickable things
+function setupCustomCursor() {
+  const cursor = document.getElementById("customCursor");
+
+  document.addEventListener("mousemove", (event) => {
+    cursor.style.left = event.clientX + "px";
+    cursor.style.top = event.clientY + "px";
+  });
+
+  // make cursor bigger when hovering buttons, links, inputs
+  document.addEventListener("mouseover", (event) => {
+    const hoverable = event.target.closest("button, a, input, label, [role='button']");
+    if (hoverable) {
+      cursor.classList.add("hovering");
+    } else {
+      cursor.classList.remove("hovering");
+    }
+  });
+}
 
 // landing page — runs first before the game shows
 function setupLanding() {
@@ -159,6 +180,12 @@ function startGame() {
   loadLevel();
   checkHeartRegen();
   setupMenuListeners();
+
+  // clicking the wordle title on game screen goes back to landing page
+  document.getElementById("gameTitle").addEventListener("click", () => {
+    document.getElementById("gameScreen").classList.add("hidden");
+    document.getElementById("landing").classList.remove("hidden");
+  });
 }
 
 function loadFromStorage() {
@@ -252,6 +279,7 @@ function loadLevel() {
     "Puzzle " + String(level).padStart(4, "0");
 
   document.getElementById("messageArea").textContent = "";
+  document.getElementById("messageArea").className = "message-area";
   document.getElementById("nextButton").classList.add("hidden");
 
   buildGrid();
@@ -343,7 +371,8 @@ function submitGuess() {
       showNextButton();
     } else if (currentRow >= 5) {
       loseHeart(); // hearts go down in case puzzle wrong
-      showMessage("The word was: " + secretWord);
+      // show the revealed word with the soft styled class
+      showRevealedWord("The word was: " + secretWord);
       gameOver = true;
       showNextButton();
     } else {
@@ -352,6 +381,13 @@ function submitGuess() {
       currentGuess = [];
     }
   }, result.length * 80 + 350);
+}
+
+// shows the correct word after a loss with soft rounded styling and fade in
+function showRevealedWord(message) {
+  const messageArea = document.getElementById("messageArea");
+  messageArea.textContent = message;
+  messageArea.className = "message-area word-reveal";
 }
 
 function scoreGuess(guess, secret) {
@@ -427,7 +463,7 @@ function loseHeart() {
   renderHearts();
 
   if (hearts <= 0) {
-    showMessage("Come back later 💔");
+    showMessage("Come back in just few minutes~ You got this! ✨");
     gameOver = true;
     document.getElementById("nextButton").classList.add("hidden");
   }

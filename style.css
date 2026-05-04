@@ -24,6 +24,8 @@
   --button-bg: #7aadec;
   --button-text: #fff;
   --landing-input-bg: #f0f6ff;
+  /* glow color for wordle title hover - light mode */
+  --title-glow: rgba(120, 160, 255, 0.55);
 }
 
 body.dark {
@@ -52,12 +54,19 @@ body.dark {
   --button-bg: #3a6abf;
   --button-text: #fff;
   --landing-input-bg: #1a2545;
+  /* glow color for wordle title hover - dark mode, softer blue */
+  --title-glow: rgba(100, 180, 255, 0.6);
 }
 
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+/* hide default cursor everywhere, our custom one takes over */
+* {
+  cursor: none !important;
 }
 
 body {
@@ -70,6 +79,38 @@ body {
   transition: background-color 0.35s ease;
 }
 
+/* ---- custom cursor ---- */
+
+.custom-cursor {
+  width: 18px;
+  height: 18px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 99999;
+  /* pixel star shape using clip-path */
+  background: #f0a0b0;
+  clip-path: polygon(
+    50% 0%, 61% 35%, 98% 35%, 68% 57%,
+    79% 91%, 50% 70%, 21% 91%, 32% 57%,
+    2% 35%, 39% 35%
+  );
+  transform: translate(-50%, -50%);
+  transition: transform 0.08s ease, background 0.3s;
+  box-shadow: 0 0 6px rgba(240, 160, 176, 0.7);
+}
+
+body.dark .custom-cursor {
+  background: #4ab0e8;
+  box-shadow: 0 0 6px rgba(74, 176, 232, 0.7);
+}
+
+/* cursor grows a tiny bit on clickable elements */
+.custom-cursor.hovering {
+  transform: translate(-50%, -50%) scale(1.4);
+}
+
 /* ---- landing page ---- */
 
 .landing {
@@ -79,6 +120,14 @@ body {
   align-items: center;
   justify-content: center;
   padding: 30px 20px;
+  /* soft pastel cozy gradient background for landing */
+  background: linear-gradient(
+    135deg,
+    #d4edd9 0%,
+    #f5ece0 35%,
+    #fadadd 70%,
+    #d4e8f0 100%
+  );
 }
 
 .landing-inner {
@@ -146,6 +195,8 @@ body {
   text-align: center;
   transition: border-color 0.2s, box-shadow 0.2s;
   box-shadow: 2px 2px 0 var(--tile-shadow);
+  /* input needs default cursor so typing still works */
+  cursor: text !important;
 }
 
 .name-input:focus {
@@ -173,7 +224,7 @@ body {
   padding: 12px 36px;
   font-family: 'Press Start 2P', monospace;
   font-size: 0.75rem;
-  cursor: pointer;
+  cursor: none;
   box-shadow: 4px 4px 0 var(--tile-shadow);
   display: flex;
   align-items: center;
@@ -241,13 +292,21 @@ body {
   flex-direction: column;
 }
 
+/* wordle title on game screen — clickable, glows on hover */
 .game-title {
   font-family: 'Press Start 2P', monospace;
   font-size: 1.4rem;
   color: var(--title-color);
   letter-spacing: 2px;
   text-shadow: 2px 2px 0 var(--tile-shadow);
-  transition: color 0.3s, text-shadow 0.3s;
+  transition: color 0.3s, text-shadow 0.3s, filter 0.3s;
+  cursor: none;
+}
+
+.game-title:hover {
+  /* soft pastel glow that works in both modes */
+  filter: drop-shadow(0 0 8px var(--title-glow)) drop-shadow(0 0 16px var(--title-glow));
+  text-shadow: 2px 2px 0 var(--tile-shadow), 0 0 20px var(--title-glow);
 }
 
 .progress-label {
@@ -298,7 +357,7 @@ body {
   border-radius: 50%;
   width: 38px;
   height: 38px;
-  cursor: pointer;
+  cursor: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -315,7 +374,7 @@ body {
   border-radius: 8px;
   width: 38px;
   height: 38px;
-  cursor: pointer;
+  cursor: none;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -372,7 +431,7 @@ body {
   background: none;
   border: none;
   font-size: 1.1rem;
-  cursor: pointer;
+  cursor: none;
   color: var(--label-color);
 }
 
@@ -392,7 +451,7 @@ body {
   font-weight: 700;
   font-size: 0.9rem;
   color: var(--tile-text);
-  cursor: pointer;
+  cursor: none;
   text-align: left;
   transition: background 0.2s, transform 0.15s;
 }
@@ -456,7 +515,7 @@ body {
   background: none;
   border: none;
   font-size: 1rem;
-  cursor: pointer;
+  cursor: none;
   color: var(--label-color);
 }
 
@@ -611,6 +670,22 @@ body {
   transition: color 0.3s;
 }
 
+/* revealed word after a loss — soft rounded style with letter spacing and fade in */
+.message-area.word-reveal {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: var(--title-color);
+  animation: wordFadeIn 0.5s ease forwards;
+  opacity: 0;
+}
+
+@keyframes wordFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 .next-button {
   background: var(--button-bg);
   color: var(--button-text);
@@ -619,7 +694,7 @@ body {
   padding: 10px 22px;
   font-family: 'Press Start 2P', monospace;
   font-size: 0.65rem;
-  cursor: pointer;
+  cursor: none;
   box-shadow: 3px 3px 0 var(--tile-shadow);
   transition: transform 0.15s, box-shadow 0.15s, background 0.3s;
   letter-spacing: 1px;
@@ -662,7 +737,7 @@ body {
   font-weight: 800;
   font-size: 0.85rem;
   color: var(--key-text);
-  cursor: pointer;
+  cursor: none;
   display: flex;
   align-items: center;
   justify-content: center;
