@@ -64,9 +64,9 @@ body.dark {
   padding: 0;
 }
 
-/* hide default cursor everywhere, our custom one takes over */
+/* pastel arrow cursor with blue shadow everywhere */
 * {
-  cursor: none !important;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cfilter id='shadow'%3E%3CfeDropShadow dx='1' dy='1' stdDeviation='1.5' flood-color='%2374b0e8' flood-opacity='0.8'/%3E%3C/filter%3E%3Cpath d='M4 2 L4 18 L8 14 L12 22 L14 21 L10 13 L16 13 Z' fill='%23f0b8c8' stroke='%23c87090' stroke-width='0.8' filter='url(%23shadow)'/%3E%3C/svg%3E") 4 2, auto !important;
 }
 
 body {
@@ -79,38 +79,6 @@ body {
   transition: background-color 0.35s ease;
 }
 
-/* ---- custom cursor ---- */
-
-.custom-cursor {
-  width: 18px;
-  height: 18px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  z-index: 99999;
-  /* pixel star shape using clip-path */
-  background: #f0a0b0;
-  clip-path: polygon(
-    50% 0%, 61% 35%, 98% 35%, 68% 57%,
-    79% 91%, 50% 70%, 21% 91%, 32% 57%,
-    2% 35%, 39% 35%
-  );
-  transform: translate(-50%, -50%);
-  transition: transform 0.08s ease, background 0.3s;
-  box-shadow: 0 0 6px rgba(240, 160, 176, 0.7);
-}
-
-body.dark .custom-cursor {
-  background: #4ab0e8;
-  box-shadow: 0 0 6px rgba(74, 176, 232, 0.7);
-}
-
-/* cursor grows a tiny bit on clickable elements */
-.custom-cursor.hovering {
-  transform: translate(-50%, -50%) scale(1.4);
-}
-
 /* ---- landing page ---- */
 
 .landing {
@@ -120,7 +88,7 @@ body.dark .custom-cursor {
   align-items: center;
   justify-content: center;
   padding: 30px 20px;
-  /* soft pastel cozy gradient background for landing */
+  /* soft pastel cozy gradient - light green, beige, soft pink */
   background: linear-gradient(
     135deg,
     #d4edd9 0%,
@@ -195,8 +163,6 @@ body.dark .custom-cursor {
   text-align: center;
   transition: border-color 0.2s, box-shadow 0.2s;
   box-shadow: 2px 2px 0 var(--tile-shadow);
-  /* input needs default cursor so typing still works */
-  cursor: text !important;
 }
 
 .name-input:focus {
@@ -224,7 +190,7 @@ body.dark .custom-cursor {
   padding: 12px 36px;
   font-family: 'Press Start 2P', monospace;
   font-size: 0.75rem;
-  cursor: none;
+  cursor: inherit;
   box-shadow: 4px 4px 0 var(--tile-shadow);
   display: flex;
   align-items: center;
@@ -292,7 +258,7 @@ body.dark .custom-cursor {
   flex-direction: column;
 }
 
-/* wordle title on game screen — clickable, glows on hover */
+/* wordle title is clickable — goes back to landing, glows on hover */
 .game-title {
   font-family: 'Press Start 2P', monospace;
   font-size: 1.4rem;
@@ -300,11 +266,11 @@ body.dark .custom-cursor {
   letter-spacing: 2px;
   text-shadow: 2px 2px 0 var(--tile-shadow);
   transition: color 0.3s, text-shadow 0.3s, filter 0.3s;
-  cursor: none;
+  cursor: inherit;
 }
 
 .game-title:hover {
-  /* soft pastel glow that works in both modes */
+  /* soft pastel glow, works in both light and dark mode */
   filter: drop-shadow(0 0 8px var(--title-glow)) drop-shadow(0 0 16px var(--title-glow));
   text-shadow: 2px 2px 0 var(--tile-shadow), 0 0 20px var(--title-glow);
 }
@@ -357,7 +323,7 @@ body.dark .custom-cursor {
   border-radius: 50%;
   width: 38px;
   height: 38px;
-  cursor: none;
+  cursor: inherit;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -374,7 +340,7 @@ body.dark .custom-cursor {
   border-radius: 8px;
   width: 38px;
   height: 38px;
-  cursor: none;
+  cursor: inherit;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -431,7 +397,7 @@ body.dark .custom-cursor {
   background: none;
   border: none;
   font-size: 1.1rem;
-  cursor: none;
+  cursor: inherit;
   color: var(--label-color);
 }
 
@@ -451,7 +417,7 @@ body.dark .custom-cursor {
   font-weight: 700;
   font-size: 0.9rem;
   color: var(--tile-text);
-  cursor: none;
+  cursor: inherit;
   text-align: left;
   transition: background 0.2s, transform 0.15s;
 }
@@ -515,7 +481,7 @@ body.dark .custom-cursor {
   background: none;
   border: none;
   font-size: 1rem;
-  cursor: none;
+  cursor: inherit;
   color: var(--label-color);
 }
 
@@ -670,7 +636,7 @@ body.dark .custom-cursor {
   transition: color 0.3s;
 }
 
-/* revealed word after a loss — soft rounded style with letter spacing and fade in */
+/* revealed word after a loss — softer font style with spacing and gentle fade in */
 .message-area.word-reveal {
   font-family: 'Nunito', sans-serif;
   font-size: 1rem;
@@ -694,7 +660,7 @@ body.dark .custom-cursor {
   padding: 10px 22px;
   font-family: 'Press Start 2P', monospace;
   font-size: 0.65rem;
-  cursor: none;
+  cursor: inherit;
   box-shadow: 3px 3px 0 var(--tile-shadow);
   transition: transform 0.15s, box-shadow 0.15s, background 0.3s;
   letter-spacing: 1px;
@@ -737,7 +703,7 @@ body.dark .custom-cursor {
   font-weight: 800;
   font-size: 0.85rem;
   color: var(--key-text);
-  cursor: none;
+  cursor: inherit;
   display: flex;
   align-items: center;
   justify-content: center;

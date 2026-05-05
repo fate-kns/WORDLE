@@ -98,43 +98,39 @@ let playerName = "";
 document.addEventListener("DOMContentLoaded", () => {
   loadFromStorage();
   setupLanding();
-  setupCustomCursor();
+  setupMenuListeners();
+
+  // clicking wordle title on game screen always goes back to landing
+  document.getElementById("gameTitle").addEventListener("click", () => {
+    goToLanding();
+  });
 
   // dark mode emoji, need to change
   applyTheme();
 });
 
-// custom cursor follows the mouse everywhere, grows on hover over clickable things
-function setupCustomCursor() {
-  const cursor = document.getElementById("customCursor");
+// goes to landing and always pre-fills whatever name is saved so player can edit or just hit play
+function goToLanding() {
+  document.getElementById("gameScreen").classList.add("hidden");
+  document.getElementById("landing").classList.remove("hidden");
 
-  document.addEventListener("mousemove", (event) => {
-    cursor.style.left = event.clientX + "px";
-    cursor.style.top = event.clientY + "px";
-  });
-
-  // make cursor bigger when hovering buttons, links, inputs
-  document.addEventListener("mouseover", (event) => {
-    const hoverable = event.target.closest("button, a, input, label, [role='button']");
-    if (hoverable) {
-      cursor.classList.add("hovering");
-    } else {
-      cursor.classList.remove("hovering");
-    }
-  });
+  const savedName = localStorage.getItem("wordle_player_name");
+  if (savedName) {
+    document.getElementById("nameInput").value = savedName;
+  }
+  document.getElementById("nameError").classList.add("hidden");
 }
 
-// landing page — runs first before the game shows
+// landing page — wired once, handles both first visit and every return from game
 function setupLanding() {
   const nameInput = document.getElementById("nameInput");
   const playButton = document.getElementById("playButton");
   const nameError = document.getElementById("nameError");
 
+  // pre-fill saved name so returning players just hit play or type a new one
   const savedName = localStorage.getItem("wordle_player_name");
   if (savedName) {
-    playerName = savedName;
-    startGame();
-    return;
+    nameInput.value = savedName;
   }
 
   nameInput.addEventListener("input", () => {
@@ -162,16 +158,24 @@ function setupLanding() {
       return;
     }
 
+    // save whatever name they typed — same or newly changed, always overwrites
     playerName = value;
     localStorage.setItem("wordle_player_name", playerName);
     startGame();
   });
+
+  // if name already saved skip landing on first page load and go straight to game
+  if (savedName) {
+    playerName = savedName;
+    startGame();
+  }
 }
 
 function startGame() {
   document.getElementById("landing").classList.add("hidden");
   document.getElementById("gameScreen").classList.remove("hidden");
 
+  // always update badge — catches name changes made on landing
   document.getElementById("playerNameDisplay").textContent = playerName;
 
   buildGrid();
@@ -179,13 +183,6 @@ function startGame() {
   renderHearts();
   loadLevel();
   checkHeartRegen();
-  setupMenuListeners();
-
-  // clicking the wordle title on game screen goes back to landing page
-  document.getElementById("gameTitle").addEventListener("click", () => {
-    document.getElementById("gameScreen").classList.add("hidden");
-    document.getElementById("landing").classList.remove("hidden");
-  });
 }
 
 function loadFromStorage() {
@@ -347,6 +344,7 @@ function submitGuess() {
 
   const result = scoreGuess(guessWord, secretWord);
 
+  // reveals each tile one by one with a small delay between them
   result.forEach((status, col) => {
     const delay = col * 80;
     setTimeout(() => {
@@ -371,7 +369,6 @@ function submitGuess() {
       showNextButton();
     } else if (currentRow >= 5) {
       loseHeart(); // hearts go down in case puzzle wrong
-      // show the revealed word with the soft styled class
       showRevealedWord("The word was: " + secretWord);
       gameOver = true;
       showNextButton();
@@ -395,6 +392,7 @@ function scoreGuess(guess, secret) {
   const secretArr = secret.split("");
   const guessArr = guess.split("");
 
+  // pass 1 — exact matches first
   for (let i = 0; i < 5; i++) {
     if (guessArr[i] === secretArr[i]) {
       result[i] = "correct";
@@ -403,6 +401,7 @@ function scoreGuess(guess, secret) {
     }
   }
 
+  // pass 2 — right letter wrong spot, avoids double counting duplicates
   for (let i = 0; i < 5; i++) {
     if (guessArr[i] === null) continue;
     const index = secretArr.indexOf(guessArr[i]);
@@ -415,6 +414,7 @@ function scoreGuess(guess, secret) {
   return result;
 }
 
+// keys only upgrade in color, never go backwards
 function updateKeyboard(guess, result) {
   const priority = { correct: 3, present: 2, absent: 1, unused: 0 };
 
@@ -469,6 +469,7 @@ function loseHeart() {
   }
 }
 
+// checks every 30 seconds if enough time has passed to give back a heart
 function checkHeartRegen() {
   setInterval(() => {
     if (hearts >= MAX_HEARTS) return;
@@ -536,6 +537,7 @@ function setupMenuListeners() {
     menuPanel.classList.remove("open");
   });
 
+  // closes menu if player clicks anywhere outside of it
   document.addEventListener("click", (event) => {
     if (
       menuPanel.classList.contains("open") &&
